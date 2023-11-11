@@ -64,8 +64,10 @@ def chat_room(request, room_name):
     key = os.environ.get('ENCRYPTION_KEY')
     decrypted_messages = []
     for message in messages:
-        message.text = decrypt_message(base64.b64decode(message.text), key)
-        decrypted_messages.append(message)
+        decrypted_text = decrypt_message(base64.b64decode(message.text), key)
+        if decrypted_text is not None:
+            message.text = decrypted_text
+            decrypted_messages.append(message)
     return render(request, 'chat_room.html', {'roomUuid': ch_room.id, 'messages': decrypted_messages})
 
 

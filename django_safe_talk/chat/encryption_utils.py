@@ -2,7 +2,7 @@ import base64
 
 from channels.db import database_sync_to_async
 from django.core.cache import cache
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 
 # Функция для генерации ключа шифрования
 def generate_key():
@@ -22,10 +22,13 @@ def encrypt_message(message, key):
 
 # Функция для дешифрования сообщения
 def decrypt_message(message, key):
-    if isinstance(key, str):
-        key = key.encode()
-    if isinstance(message, str):
-        message = message.encode()
-    fernet = Fernet(key)
-    decrypted_message = fernet.decrypt(message)
-    return decrypted_message.decode()
+    try:
+        if isinstance(key, str):
+            key = key.encode()
+        if isinstance(message, str):
+            message = message.encode()
+        fernet = Fernet(key)
+        decrypted_message = fernet.decrypt(message)
+        return decrypted_message.decode()
+    except InvalidToken:
+        return None
