@@ -9,7 +9,9 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Обновление списка пакетов и установка netcat
-RUN apt-get update && apt-get install -y netcat-openbsd && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y netcat-openbsd postgresql-client && \
+    rm -rf /var/lib/apt/lists/*
 
 # Установите зависимости
 COPY requirements.txt .
