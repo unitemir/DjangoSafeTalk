@@ -1,1 +1,12 @@
 .env
+*.pyc
+__pycache__/
+*.py[cod]
+*/migrations/
+*/secrets.json
+*.sqlite3
+
+*.log
+media/
+venv/
+data/
