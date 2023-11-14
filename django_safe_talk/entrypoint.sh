@@ -31,7 +31,6 @@ while ! pg_isready -h db -p 5432 -U $POSTGRES_USER; do
   sleep 2
   attempt=$(( $attempt + 1 ))
 done
-
 echo "PostgreSQL is ready."
 
 # Применение миграций
