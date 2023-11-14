@@ -20,13 +20,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Копируйте содержимое локальной директории в рабочую директорию контейнера
 COPY . .
 
-# Добавьте скрипт для выполнения миграции и запуска приложения
+# Добавьте скрипт entrypoint и выполните проверку и удаление пустой строки
 COPY entrypoint.sh /usr/src/app/entrypoint.sh
-RUN chmod +x /usr/src/app/entrypoint.sh
+RUN chmod +x /usr/src/app/entrypoint.sh \
+    && if [ -n "$(tail -c 2 /usr/src/app/entrypoint.sh)" ]; then sed -i -e '$d' /usr/src/app/entrypoint.sh; fi
 
 # Задайте скрипт entrypoint, который будет запускаться при старте контейнера
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
 
 # По умолчанию запускайте Gunicorn
 CMD ["gunicorn", "--worker-class", "uvicorn.workers.UvicornWorker", "--workers", "4", "--bind", "0.0.0.0:8000", "django_safe_talk.asgi:application"]
-
