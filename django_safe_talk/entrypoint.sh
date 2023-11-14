@@ -34,7 +34,6 @@ done
 
 echo "PostgreSQL is ready."
 
-
 # Применение миграций
 python manage.py migrate
 
