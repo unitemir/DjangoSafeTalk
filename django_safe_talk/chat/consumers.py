@@ -65,11 +65,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         encrypted_message = base64.b64decode(message)
         key = await self.take_encryption_key()
         decrypted_message = decrypt_message(encrypted_message, key)
-        user = await self.take_user(event['user'])
-
+        username = event['user']
         await self.send(text_data=json.dumps({
             'message': decrypted_message,
-            'user': user,
+            'user': username,
         }))
 
     @database_sync_to_async

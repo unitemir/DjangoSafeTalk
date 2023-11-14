@@ -2,12 +2,42 @@
 <html>
 <head>
     <title>Chat Room</title>
+    <style>
+        .message {
+            clear: both;
+            margin: 5px;
+            padding: 5px;
+            max-width: 100%; /* Сделать сообщения такой же ширины, как input */
+        }
+
+        .message.from-self {
+            text-align: right;
+            background-color: #E0E0E0;
+            margin-left: 30%; /* Добавить отступ слева для сообщений */
+        }
+
+        .message.from-other {
+            text-align: left;
+            background-color: #F0F0F0;
+            margin-left: 0; /* Убрать отступ слева для сообщений от другого пользователя */
+        }
+
+        /* Стиль input и кнопки */
+        #chat-message-input {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        #chat-message-submit {
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
-    <h2>Chat with {{ other_user.username }}</h2>
+    <h2>Chat with {{ other_user }}</h2>
     <div id="chat-log">
         {% for message in messages %}
-            <div>
+            <div class="message {% if message.user.username == other_user %}from-other{% else %}from-self{% endif %}">
                 <span class="message-meta">
                     {{ message.user.username }} ({{ message.timestamp|date:"H:i:s" }}):
                 </span>
@@ -29,6 +59,12 @@
             const data = JSON.parse(e.data);
             console.log(data);
             const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            if (data.user === userName) {
+                messageDiv.classList.add('from-self');
+            } else {
+                messageDiv.classList.add('from-other');
+            }
             messageDiv.innerHTML = `<span class="message-meta">${data.user} (${new Date().toLocaleTimeString()}):</span> ${data.message}<br>`;
             document.querySelector('#chat-log').appendChild(messageDiv);
         };

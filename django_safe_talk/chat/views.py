@@ -17,11 +17,11 @@ def start_chat(request, user_id):
     other_user = User.objects.get(id=user_id)
     existing_chat = ChatRoom.objects.filter(participants=request.user).filter(participants=other_user).first()
     if existing_chat:
-        return redirect('chat_room', room_name=existing_chat.name)
+        return redirect('chat_room', room_name=existing_chat.name, other_user=other_user)
     else:
         ch_room, created = ChatRoom.objects.get_or_create(name=f"chat_{request.user.id}_{other_user.id}")
         ch_room.participants.add(request.user, other_user)
-        return redirect('chat_room', room_name=ch_room.name)
+        return redirect('chat_room', room_name=ch_room.name, other_user=other_user)
 
 
 def login(request):
@@ -56,7 +56,7 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 
-def chat_room(request, room_name):
+def chat_room(request, room_name, other_user):
     if not request.user.is_authenticated:
         return redirect('login')
     ch_room = ChatRoom.objects.get(name=room_name)
@@ -68,7 +68,7 @@ def chat_room(request, room_name):
         if decrypted_text is not None:
             message.text = decrypted_text
             decrypted_messages.append(message)
-    return render(request, 'chat_room.html', {'roomUuid': ch_room.id, 'messages': decrypted_messages})
+    return render(request, 'chat_room.html', {'roomUuid': ch_room.id, 'messages': decrypted_messages, 'other_user': other_user})
 
 
 class MessageListView(ListAPIView):
